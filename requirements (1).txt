@@ -1,0 +1,15 @@
+# Core framework
+fastapi==0.115.5
+
+# ASGI server — runs FastAPI
+uvicorn[standard]==0.32.1
+
+# ORM + SQLite driver (SQLite support is built into Python's stdlib)
+sqlalchemy==2.0.36
+
+# Pydantic v2 — validation and serialisation (bundled with FastAPI, pinned for stability)
+pydantic==2.10.3
+
+# Email validation support for Pydantic's EmailStr type
+pydantic[email]==2.10.3
+email-validator==2.2.0

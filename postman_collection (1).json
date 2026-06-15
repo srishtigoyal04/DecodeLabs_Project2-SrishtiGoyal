@@ -1,0 +1,177 @@
+{
+  "info": {
+    "name": "User Management API",
+    "_postman_id": "user-management-api-v1",
+    "description": "Complete CRUD test suite for the User Management REST API built with FastAPI.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000",
+      "type": "string",
+      "description": "Change this if running on a different host/port"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Health Check — GET /",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{base_url}}/", "host": ["{{base_url}}"], "path": [""] },
+        "description": "Verify the server is running."
+      },
+      "response_example": {
+        "status": "running",
+        "message": "User Management API is online.",
+        "version": "1.0.0",
+        "docs": "/docs"
+      }
+    },
+    {
+      "name": "2. Create User (John) — POST /users",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"age\": 25\n}"
+        },
+        "url": { "raw": "{{base_url}}/users", "host": ["{{base_url}}"], "path": ["users"] },
+        "description": "Create a new user. Returns 201 + success message."
+      }
+    },
+    {
+      "name": "3. Create User (Jane) — POST /users",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Jane Smith\",\n  \"email\": \"jane@example.com\",\n  \"age\": 30\n}"
+        },
+        "url": { "raw": "{{base_url}}/users", "host": ["{{base_url}}"], "path": ["users"] },
+        "description": "Create a second user."
+      }
+    },
+    {
+      "name": "4. Create User — Duplicate Email (409) — POST /users",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John Clone\",\n  \"email\": \"john@example.com\",\n  \"age\": 22\n}"
+        },
+        "url": { "raw": "{{base_url}}/users", "host": ["{{base_url}}"], "path": ["users"] },
+        "description": "Tries to create a user with an existing email. Expect HTTP 409 Conflict."
+      }
+    },
+    {
+      "name": "5. Create User — Invalid Data (422) — POST /users",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"\",\n  \"email\": \"not-an-email\",\n  \"age\": -5\n}"
+        },
+        "url": { "raw": "{{base_url}}/users", "host": ["{{base_url}}"], "path": ["users"] },
+        "description": "Empty name, invalid email, negative age. Expect HTTP 422 with field-level errors."
+      }
+    },
+    {
+      "name": "6. Get All Users — GET /users",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/users?skip=0&limit=10",
+          "host": ["{{base_url}}"],
+          "path": ["users"],
+          "query": [
+            { "key": "skip", "value": "0" },
+            { "key": "limit", "value": "10" }
+          ]
+        },
+        "description": "Retrieve all users with pagination."
+      }
+    },
+    {
+      "name": "7. Get User by ID — GET /users/1",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{base_url}}/users/1", "host": ["{{base_url}}"], "path": ["users", "1"] },
+        "description": "Fetch user with id=1. Returns 404 if not found."
+      }
+    },
+    {
+      "name": "8. Get User — Not Found (404) — GET /users/999",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{base_url}}/users/999", "host": ["{{base_url}}"], "path": ["users", "999"] },
+        "description": "Fetch a user that doesn't exist. Expect HTTP 404."
+      }
+    },
+    {
+      "name": "9. Update User (age only) — PUT /users/1",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"age\": 26\n}"
+        },
+        "url": { "raw": "{{base_url}}/users/1", "host": ["{{base_url}}"], "path": ["users", "1"] },
+        "description": "Partial update — only age changes. Name and email are untouched."
+      }
+    },
+    {
+      "name": "10. Update User (all fields) — PUT /users/1",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John Updated\",\n  \"email\": \"john.updated@example.com\",\n  \"age\": 27\n}"
+        },
+        "url": { "raw": "{{base_url}}/users/1", "host": ["{{base_url}}"], "path": ["users", "1"] },
+        "description": "Full update — all fields changed."
+      }
+    },
+    {
+      "name": "11. Update User — Duplicate Email (409) — PUT /users/1",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"jane@example.com\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/users/1", "host": ["{{base_url}}"], "path": ["users", "1"] },
+        "description": "Try to change user 1's email to jane's email. Expect HTTP 409."
+      }
+    },
+    {
+      "name": "12. Delete User — DELETE /users/2",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": { "raw": "{{base_url}}/users/2", "host": ["{{base_url}}"], "path": ["users", "2"] },
+        "description": "Delete user with id=2."
+      }
+    },
+    {
+      "name": "13. Delete User — Not Found (404) — DELETE /users/999",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": { "raw": "{{base_url}}/users/999", "host": ["{{base_url}}"], "path": ["users", "999"] },
+        "description": "Attempt to delete a user that doesn't exist. Expect HTTP 404."
+      }
+    }
+  ]
+}
